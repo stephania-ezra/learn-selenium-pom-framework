@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="LumaRetailSite">
+    <Appenders>
+        <Console name="STDOUT">
+            <PatternLayout pattern="%C{1}.%M %m %ex%n"/>
+        </Console>
+        <File name="MyFile" fileName="target/test-run.log">
+            <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <!--        <Logger name="org.luma.App" level="info" additivity="false">-->
+        <!--            <AppenderRef ref="STDOUT"/>-->
+        <!--        </Logger>-->
+        <Root level="INFO">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="MyFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
