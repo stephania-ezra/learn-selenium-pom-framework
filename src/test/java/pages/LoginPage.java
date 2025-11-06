@@ -22,6 +22,9 @@ public class LoginPage {
     @FindBy(xpath="//button[normalize-space()='Login']")
     private WebElement loginButton;
 
+    @FindBy(xpath="//p[@class='oxd-text oxd-text--p oxd-alert-content-text']")
+    private WebElement errorMessage;
+
     public LoginPage(WebDriver driver) {
         if(driver == null){
             throw new IllegalArgumentException("WebDriver instance is null! Please initialize the driver " +
@@ -37,4 +40,9 @@ public class LoginPage {
         passwordField.sendKeys(password);
         loginButton.click();
     }
+
+    public String getErrorMessage(){
+        return errorMessage.getText();
+    }
+
 }
