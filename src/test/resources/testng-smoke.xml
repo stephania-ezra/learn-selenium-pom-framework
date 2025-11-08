@@ -13,7 +13,7 @@
             </run>
         </groups>
         <classes>
-            <class name="tests.LoginTest"/>
+            <class name="core.LoginTest"/>
         </classes>
     </test>
 </suite>
