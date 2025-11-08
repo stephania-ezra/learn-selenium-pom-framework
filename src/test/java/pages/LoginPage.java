@@ -35,7 +35,7 @@ public class LoginPage {
     }
 
     public void login(String username, String password) {
-        WaitUtils.waitForVisible(driver, usernameField);
+       // WaitUtils.waitForVisible(driver, usernameField);
         usernameField.sendKeys(username);
         passwordField.sendKeys(password);
         loginButton.click();

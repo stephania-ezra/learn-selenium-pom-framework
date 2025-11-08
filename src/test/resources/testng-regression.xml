@@ -5,7 +5,7 @@
         <listener class-name="utils.TestListener"/>
     </listeners>
 
-    <test name="Smoke Tests" thread-count="2">
+    <test name="Regression Tests" thread-count="2">
         <groups>
             <run>
 <!--                <include name="smoke"/>-->
@@ -13,7 +13,7 @@
             </run>
         </groups>
         <classes>
-            <class name="tests.LoginTest"/>
+            <class name="core.LoginTest"/>
         </classes>
     </test>
 </suite>
