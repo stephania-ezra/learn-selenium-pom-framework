@@ -5,7 +5,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class DriverManager {
-    private WebDriver driver;
+
+    //private WebDriver driver;
+    private static WebDriver driver;
 
     public DriverManager(String browser) {
         if (browser.equalsIgnoreCase("chrome")) {
@@ -17,7 +19,7 @@ public class DriverManager {
         }
     }
 
-    public WebDriver getDriver() {
+    public static WebDriver getDriver() {
         driver.manage().window().maximize();
         return driver;
     }

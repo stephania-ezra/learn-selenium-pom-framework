@@ -4,9 +4,10 @@ import drivers.DriverManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterClass;
+import org.testng.ITestContext;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import utils.ConfigReader;
 import utils.ReportManager;
@@ -14,8 +15,8 @@ import utils.ReportManager;
 import java.time.Duration;
 
 public class BaseTest {
+    protected WebDriver driver;
 
-    public WebDriver driver;
     //String env = System.getenv("config.env");
     private final Logger log = LogManager.getLogger(BaseTest.class);
     public ConfigReader configReader = new ConfigReader();
@@ -27,13 +28,15 @@ public class BaseTest {
         configReader.loadProperties();
     }
 
-    @BeforeClass(alwaysRun = true)
-    public void setUp(){
+    //@BeforeClass(alwaysRun = true)
+    @BeforeMethod(alwaysRun = true)
+    public void setUp(ITestContext context) {
         String browser = configReader.getBrowser();
         log.info("browser read from config {}", browser);
 
         driverManager = new DriverManager(browser);
-        driver = driverManager.getDriver();
+        driver = DriverManager.getDriver();
+        context.setAttribute("WebDriver", driver);
         driver.get(configReader.getBaseUrl());
     }
 
@@ -42,7 +45,7 @@ public class BaseTest {
     public void stopTheFlow(int value) {
         try {
             if (value == 0)
-                value = 20;
+                value = 10;
             log.info("waiting {} seconds", value);
             Thread.sleep(Duration.ofSeconds(value));
         } catch (InterruptedException e) {
@@ -55,8 +58,10 @@ public class BaseTest {
         ReportManager.flushReports();
     }
 
-    @AfterClass(alwaysRun = true)
-    public void tearDown(){
+    //@AfterClass(alwaysRun = true)
+    @AfterMethod(alwaysRun = true)
+    public void tearDown() {
+        stopTheFlow(10);
         driverManager.quitDriver();
     }
 }

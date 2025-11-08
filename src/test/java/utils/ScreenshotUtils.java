@@ -1,5 +1,7 @@
 package utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -7,31 +9,42 @@ import org.openqa.selenium.WebDriver;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class ScreenshotUtils{
-    private WebDriver driver;
 
-    public ScreenshotUtils() {
-    }
+public class ScreenshotUtils {
+    private static final Logger log = LogManager.getLogger(ScreenshotUtils.class);
 
-    public String captureScreenshot(String testName) {
-
-        if(driver==null){
-            System.err.println(" WebDriver is null! Cannot take screenshot.");
+    public static Path captureScreenshot(WebDriver driver, String fileName) {
+        Path imageFilePath = null;
+        if (driver == null) {
+            log.error("WebDriver is null! Cannot take screenshot.");
             return null;
         }
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String path = "test-output/screenshots/" + testName + "_" + timestamp + ".png";
-        File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        File dest = new File(path);
-        dest.getParentFile().mkdirs();
+
         try {
-            Files.copy(src.toPath(), dest.toPath());
+            // 📁 Create dated subfolder to avoid overwriting
+            String dateFolder = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            Path screenshotDir = Paths.get("reports", "screenshots", dateFolder);
+            //Path screenshotDir = Paths.get("test-output", "screenshots", dateFolder);
+            if (!Files.exists(screenshotDir)) {
+                Files.createDirectories(screenshotDir);
+            }
+            // 🖼 Capture screenshot
+            File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            Path fromFilePath = srcFile.toPath();
+            imageFilePath = screenshotDir.resolve(fileName);
+
+            Files.copy(fromFilePath, imageFilePath, StandardCopyOption.REPLACE_EXISTING);
+            log.info("✅ Screenshot captured successfully: {}", imageFilePath);
+
         } catch (IOException e) {
-            System.err.println("Could not save screenshot: " + e.getMessage());
+            log.error("❌ Failed to capture screenshot: {}", e.getMessage());
         }
-        return timestamp;
+        return imageFilePath;
     }
 }
